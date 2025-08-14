@@ -7,23 +7,6 @@ terraform {
   }
 }
 
-
-
-variable "service_name" {
-    description = "Name for the service"
-}
-variable "cluster_arn" {}
-variable "task_definition" {}
-variable "desired_count" {
-  default = 1
-}
-variable "subnets" {
-  type = list(string)
-}
-variable "security_groups" {
-  type = list(string)
-}
-
 resource "aws_ecs_service" "this" {
   name            = var.service_name
   cluster         = var.cluster_arn
@@ -34,9 +17,9 @@ resource "aws_ecs_service" "this" {
   network_configuration {
     subnets         = var.subnets
     security_groups = var.security_groups
+    assign_public_ip = var.assign_public_ip
   }
-}
 
-output "service_name" {
-  value = aws_ecs_service.this.name
+  deployment_minimum_healthy_percent = 50
+  deployment_maximum_percent         = 200
 }
